@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VarClust</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/datepicker3.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.core.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.default.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.10/alertify.min.js"></script>
+
+	<!--Icons-->
+<script src="js/lumino.glyphs.js"></script>
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>C4LAB</span>VARCLUST</a>
+			</div>
+							
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li><a href="index.html"><svg class="glyph stroked home"><use xlink:href="#stroked-home"/></svg>Introduction</a></li>
+			<li class="active"><a href="submit.html"><svg class="glyph stroked dashboard dial"><use xlink:href="#stroked-dashboard-dial"/></svg>Submit Job </a></li>
+			<li><a href="job_status.php"><svg class="glyph stroked clipboard with paper"><use xlink:href="#stroked-clipboard-with-paper"/></svg>Job Status</a></li>
+			<li><a href="result.php"><svg class="glyph stroked line-graph"><use xlink:href="#stroked-line-graph"></use></svg>Results</a></li>
+		</ul>
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<div class="col-lg-12"><font color="#f5f5f5">.</font></div>
+		</div><!--/.row-->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">Job parameters</div>
+					<div class="panel-body">
+						<div class="col-md-6">
+							<form role="form" method="post" action="run.php" name="submitPara">
+								<div class="form-group">
+									<label>E-mail</label>
+									<input class="form-control" name="email" placeholder="E-mail will be used for notification and result retrieving purpose.">
+								</div>
+                                <div class="form-group">
+                                    <label>Chromosome</label>
+                                    <select class="form-control" name="chromosome">
+                                        <option value="19">chr19 (91200..59118924)</option>
+                                        <option value="20">chr20 (60343..62965354)</option>
+                                        <option value="21">chr21 (9411239..48119740)</option>
+                                        <option value="22">chr22 (16050075..51244237)</option>
+                                    </select>
+                                </div>
+								<div class="form-group">
+									<label>Start</label>
+									<input class="form-control" name="start" placeholder="position on the chromosome">
+								</div>
+								<div class="form-group">
+									<label>End</label>
+									<input class="form-control" name="end" placeholder="position on the chromosome">
+								</div>
+								<div class="form-group">
+									<label>Clustering method</label>
+									<div class="radio">
+										<label><input type="radio" name="clustering_method" value="complete" checked>Complete Link</label>
+									</div>
+									<div class="radio">
+										<label><input type="radio" name="clustering_method" value="single">Single link</label>
+									</div>
+									<div class="radio">
+										<label><input type="radio" name="clustering_method" value="average">Average link</label>
+									</div>
+								</div>
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <input class="form-control" name="notes" placeholder="Leave some notes as the annotation for this job. (Optional)">
+                                </div>
+								
+
+								<button type="button" class="btn btn-primary" onClick="check()">Submit Button</button>
+								<button type="reset" class="btn btn-default">Reset Button</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div><!-- /.col-->
+		</div><!-- /.row -->
+	</div><!--/.main-->
+
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/chart.min.js"></script>
+	<script src="js/chart-data.js"></script>
+	<script src="js/easypiechart.js"></script>
+	<script src="js/easypiechart-data.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script>
+		!function ($) {
+			$(document).on("click","ul.nav li.parent > a > span.icon", function(){		  
+				$(this).find('em:first').toggleClass("glyphicon-minus");	  
+			}); 
+			$(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+		}(window.jQuery);
+
+		$(window).on('resize', function () {
+		  if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		})
+		$(window).on('resize', function () {
+		  if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		})
+	</script>
+	<script type="text/javascript">
+		function check()
+		{
+            email_reg = /^[^\s]+@[^\s]+\.[^\s]{2,3}$/;
+			if(submitPara.email.value == "") {
+				alertify.alert("You did not provide your email address.");
+			} else if(!email_reg.test(submitPara.email.value)) {
+                alertify.alert("Not a valid E-mail format, please check again!");
+            } else if(submitPara.chromosome.value == "") {
+                alertify.alert("You did not specified the chromosome.");
+            } else if(submitPara.start.value == "") {
+				alertify.alert("You did not specified the start position.");
+			} else if(submitPara.end.value == "") {
+				alertify.alert("You did not specified the end position.");
+			} else if(submitPara.chromosome.value == "19" && parseInt(submitPara.start.value) < 91200) {
+                alertify.alert("You choose chr19, where the first variant presents after position 91200 (start should >= 91200).");
+            } else if(submitPara.chromosome.value == "19" && parseInt(submitPara.end.value) > 59118924) {
+                alertify.alert("You choose chr19, where the last variant locates at position 59118924 (end should <= 59118924).");
+            } else if(submitPara.chromosome.value == "20" && parseInt(submitPara.start.value) < 60343) {
+                alertify.alert("You choose chr20, where the first variant presents after position 60343 (start should >= 60343).");
+            } else if(submitPara.chromosome.value == "20" && parseInt(submitPara.end.value) > 62965354) {
+                alertify.alert("You choose chr20, where the last variant locates at position 62965354 (end should <= 62965354).");
+            } else if(submitPara.chromosome.value == "21" && parseInt(submitPara.start.value) < 9411239) {
+                alertify.alert("You choose chr21, where the first variant presents after position 9411239 (start should >= 9411239).");
+            } else if(submitPara.chromosome.value == "21" && parseInt(submitPara.end.value) > 48119740) {
+                alertify.alert("You choose chr21, where the last variant locates at position 48119740 (end should <= 48119740).");
+            } else if(submitPara.chromosome.value == "22" && parseInt(submitPara.start.value) < 16050075) {
+                alertify.alert("You choose chr22, where the first variant presents after position 16050075 (start should >= 16050075).");
+            } else if(submitPara.chromosome.value == "22" && parseInt(submitPara.end.value) > 51244237) {
+                alertify.alert("You choose chr22, where the last variant locates at position 51244237 (end should <= 51244237).");
+            } else if(parseInt(submitPara.start.value) - parseInt(submitPara.end.value) >= 0) {
+				alertify.alert("The END position must be larger than START position!");
+			} else if(parseInt(submitPara.end.value) - parseInt(submitPara.start.value) > 500000) {
+				alertify.alert("VarClust now only support genomic range smaller than 500,000 bps");
+			} else{
+				submitPara.submit();
+			}
+		}
+	</script>
+</body>
+
+</html>
